@@ -1,18 +1,21 @@
+import java.util.ArrayList;
+
 /**
  * The BoundPt class represents a bounded data point in a graph, extending the DataPt class.
  * It adds a weight property to the data point and provides methods to compare points in a counterclockwise manner.
  */
-public class BoundPt extends DataPt {
+public class BoundPt extends Point {
     private double weight; // weight of the bounded data point
-    private static double totWeight = 0; // total weight of all bounded data points
+    private static double ptCount = 0; // total weight of all bounded data points
+    private static ArrayList<BoundPt> bdPoints = new ArrayList<>();
 
     /**
      * Gets the total weight of all bounded data points.
      *
      * @return the total weight of all bounded data points
      */
-    public static double getTotWeight() {
-        return totWeight;
+    public static double getPtCount() {
+        return ptCount;
     }
 
     /**
@@ -20,8 +23,8 @@ public class BoundPt extends DataPt {
      *
      * @param i the total weight of all bounded data points
      */
-    public static void setTotWeight(int i) {
-        totWeight = i;
+    public static void setPtCount(int i) {
+        ptCount = i;
     }
 
     /**
@@ -30,16 +33,11 @@ public class BoundPt extends DataPt {
      *
      * @param x      the x-coordinate of the bounded data point
      * @param y      the y-coordinate of the bounded data point
-     * @param weight the weight of the bounded data point
      */
-    public BoundPt(double x, double y, double weight) {
-        super(x, y);
-        if (weight > 0) {
-            this.weight = weight;
-        } else {
-            this.weight = 1;
-        }
-        totWeight += this.weight;
+    public BoundPt(double x, double y) {
+        super(x,y, "BD: " + (ptCount + 1));
+        ptCount++;
+        bdPoints.add(this);
     }
 
     /**
@@ -65,10 +63,34 @@ public class BoundPt extends DataPt {
      * Draws a bounded data point on the graph using the current mouse coordinates.
      * Also adds the bounded data point to the storage.
      */
-    public static void drawPoint() {
+    public static double centroidX(){
+        double centroidX = 0.0;
+        for (BoundPt p : bdPoints){
+            centroidX = centroidX + p.X();
+        }
+        centroidX = centroidX / ptCount;
+        return centroidX;
+    }
+    public static double centroidY(){
+        double centroidY = 0.0;
+        for (BoundPt p : bdPoints) {
+            centroidY = centroidY + p.Y();
+        }
+        centroidY = centroidY / ptCount;
+        return centroidY;
+    }
+    public static void clear(){
+        bdPoints = new ArrayList<>();
+        ptCount = 0;
+    }
+    public static void drawBoundaries(){
         StdDraw.setPenColor(StdDraw.RED);
-        StdDraw.filledCircle(StdDraw.mouseX(), StdDraw.mouseY(), 0.008 * Canvas.Scale());
-        Storage.addBdPt(new BoundPt(StdDraw.mouseX(), StdDraw.mouseY(), 1.0));
-        StdDraw.show();
+        for(int i = 0; i < bdPoints.size() - 1; i++){
+            StdDraw.line(bdPoints.get(i).X(), bdPoints.get(i).Y(), bdPoints.get(i + 1).X(), bdPoints.get(i + 1).Y());
+        }
+        StdDraw.line(bdPoints.get(0).X(), bdPoints.get(0).Y(), bdPoints.get(bdPoints.size() - 1).X(), bdPoints.get(bdPoints.size() - 1).Y());
+    }
+    public void draw(){
+        draw(StdDraw.RED);
     }
 }

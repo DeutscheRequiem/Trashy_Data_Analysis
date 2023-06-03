@@ -35,8 +35,10 @@ public class Canvas {
      *
      * @param sc the new scale value to set
      */
-    public void setScale(double sc){
-        scale = sc;
+    public static void setScale(double sc){
+        if (sc > 0)
+        StdDraw.setScale(0,sc);
+        StdDraw.show();
     }
 
     /**
@@ -44,8 +46,8 @@ public class Canvas {
      */
     public static void clearCanvas(){
         StdDraw.clear();
-        Storage.resetStorage();
-        DataPt.setPtcount(0);
+        DataPt.clear();
+        BoundPt.clear();
     }
 
     /**
@@ -55,6 +57,7 @@ public class Canvas {
         JFrame frame = new JFrame();
         JFrame loc = new JFrame();
         JFrame radius = new JFrame();
+        JFrame scale = new JFrame();
         frame.setTitle("Tools");
         frame.setSize(450, 125);
         JPanel panel = new JPanel();
@@ -65,6 +68,7 @@ public class Canvas {
         JButton button4 = new JButton("Clear");
         JButton button5 = new JButton("Radius");
         JButton button6 = new JButton("Centroid");
+        JButton button7 = new JButton("Scale");
 
         button1.addActionListener(e -> {
             DataPt.graph(rNeighborhood * Scale());
@@ -109,7 +113,7 @@ public class Canvas {
         });
 
         button3.addActionListener(e -> {
-            Storage.drawBoundaries();
+            BoundPt.drawBoundaries();
             StdDraw.show();
         });
 
@@ -118,67 +122,47 @@ public class Canvas {
             StdDraw.show();
         });
 
-        JButton r1 = new JButton("0.05");
-        JButton r2 = new JButton("0.1");
-        JButton r3 = new JButton("0.2");
-        JButton r4 = new JButton("0.3");
-        JButton r5 = new JButton("0.4");
-        JButton r6 = new JButton("0.5");
-        JButton r7 = new JButton("0.75");
-        JButton r8 = new JButton("0.9");
+        JButton rSubmit = new JButton("Submit");
+        JTextField rField = new JTextField(2);
 
         button5.addActionListener( e -> {
             radius.setTitle("Radius of Neighborhood");
-            radius.setSize(125, 400);
+            radius.setSize(200, 200);
             JPanel rPanel = new JPanel();
+            rPanel.add(rSubmit);
+            rPanel.add(rField);
             radius.getContentPane().add(rPanel);
-            rPanel.add(r1);
-            rPanel.add(r2);
-            rPanel.add(r3);
-            rPanel.add(r4);
-            rPanel.add(r5);
-            rPanel.add(r6);
-            rPanel.add(r7);
-            rPanel.add(r8);
             radius.setVisible(true);
         });
 
-        r1.addActionListener(e -> {
-            rNeighborhood = 0.05;
-        });
 
-        r2.addActionListener(e -> {
-            rNeighborhood = 0.1;
-        });
-
-        r3.addActionListener(e -> {
-            rNeighborhood = 0.2;
-        });
-
-        r4.addActionListener(e -> {
-            rNeighborhood = 0.3;
-        });
-
-        r5.addActionListener(e -> {
-            rNeighborhood = 0.4;
-        });
-
-        r6.addActionListener(e -> {
-            rNeighborhood = 0.5;
-        });
-
-        r7.addActionListener(e -> {
-            rNeighborhood = 0.75;
-        });
-
-        r8.addActionListener(e -> {
-            rNeighborhood = 0.9;
+        rSubmit.addActionListener(e -> {
+            rNeighborhood = Double.parseDouble(rField.getText());
+            radius.setVisible(false);
         });
 
         button6.addActionListener(e -> {
             StdDraw.setPenColor(StdDraw.BLUE);
-            StdDraw.filledCircle(Storage.centroidX(), Storage.centroidY(), 0.01);
+            StdDraw.filledCircle(BoundPt.centroidX(), BoundPt.centroidY(), 0.01);
             StdDraw.show();
+        });
+
+        JPanel sPanel = new JPanel();
+        JTextField sField = new JTextField(2);
+        JButton sSubmit = new JButton("Submit");
+        button7.addActionListener(e -> {
+            scale.setTitle("Scale");
+            scale.setSize(200, 200);
+            scale.getContentPane().add(sPanel);
+            sPanel.add(sField);
+            sPanel.add(sSubmit);
+            scale.setVisible(true);
+        });
+
+        sSubmit.addActionListener(e -> {
+            setScale(Double.parseDouble(sField.getText()));
+            scale.setVisible(false);
+
         });
 
         panel.add(button1);
@@ -187,9 +171,11 @@ public class Canvas {
         panel.add(button4);
         panel.add(button5);
         panel.add(button6);
+        panel.add(button7);
         frame.setVisible(true);
         frame.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         loc.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
         radius.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
+        scale.setDefaultCloseOperation(JFrame.HIDE_ON_CLOSE);
     }
 }

@@ -15,14 +15,16 @@ public class TDA {
             //Hold shift and click to create points
             if (StdDraw.isKeyPressed(16) && StdDraw.isMousePressed() && pointDrawn) {
                 pointDrawn = false;
-                DataPt.drawPoint();
+                System.out.println("try");
+                new DataPt(StdDraw.mouseX(), StdDraw.mouseY());
             }else if (!StdDraw.isKeyPressed(16) && !StdDraw.isMousePressed()) {
                 pointDrawn = true;
             }
             //Hold q and click to create boundary points
             if (StdDraw.isKeyPressed(81) && StdDraw.isMousePressed() && pointDrawn) {
+                System.out.println("BD");
                 pointDrawn = false;
-                BoundPt.drawPoint();
+                new BoundPt(StdDraw.mouseX(), StdDraw.mouseY());
             }else if (!StdDraw.isKeyPressed(81) && !StdDraw.isMousePressed()) {
                 pointDrawn = true;
             }
